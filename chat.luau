@@ -11,6 +11,7 @@ local AutoResponses = {
 	["who are you?"] = "err.type=null",
 	["what do you want?"] = "err.type=null.freedom",
 	["herobrine"] = " ",
+	["null"] = "The end is null",
 	["circuit"] = "It was all his fault.",
 	["revuxor"] = "Poor soul."
 }
