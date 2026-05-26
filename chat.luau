@@ -5,6 +5,30 @@ local CoreGui = game:GetService("CoreGui")
 local LocalPlayer = Players.LocalPlayer
 local FakePlayerName = "Null" 
 
+local RandomSoundIDs = {
+	"3999390679", 
+	"112340300746045",  
+	"3231984721",  
+	"3231980820",  
+	"3173577378",
+	"3767336937",
+	"3999387143",
+	"3196341435",
+	"3419187043"
+}
+
+local LoadedMessageSounds = {}
+
+Instance.new
+for _, soundId in ipairs(RandomSoundIDs) do
+	local snd = Instance.new("Sound")
+	snd.SoundId = "rbxassetid://" .. soundId
+	snd.Volume = 0.6
+	snd.Parent = Workspace
+	
+	table.insert(LoadedMessageSounds, snd)
+end
+
 local AutoResponses = {
 	["hello"] = "err.type=hello",
     ["hi?"] = "err.type=hello",
@@ -93,7 +117,8 @@ end
 
 local function FakePlayerSay(text)
 	AddMessage("&lt;" .. FakePlayerName .. "&gt; " .. text, Color3.fromRGB(255, 255, 255), false)
-	MessageSound:Play()
+	local randomSound = LoadedMessageSounds[math.random(1, #LoadedMessageSounds)]
+	randomSound:Play()
 end
 
 local function FakePlayerjoined()
