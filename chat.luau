@@ -36,6 +36,11 @@ local AutoResponses = {
 	["herobrine"] = " ",
 	["null"] = "The end is null",
 	["circuit"] = "It was all his fault.",
+	["figure"] = "An meat monster.",
+	["seek"] = "Another poor soul in ink.",
+	["screech"] = "An flying ball with ink.",
+	["ripper"] = " ",
+	["depth"] = "A blue face with a wide-open mouth.",
 	["revuxor"] = "Poor soul."
 }
 
