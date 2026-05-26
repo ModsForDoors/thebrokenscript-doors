@@ -29,7 +29,6 @@ local LoadedMessageSounds = {}
 	end
 
 local AutoResponses = {
-	["hello"] = "err.type=hello",
     ["hi?"] = "err.type=hello",
 	["who are you?"] = "err.type=null",
 	["what do you want?"] = "err.type=null.freedom",
