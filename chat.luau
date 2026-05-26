@@ -147,3 +147,8 @@ TextBox.FocusLost:Connect(function(enterPressed)
 		CheckForAutoResponse(msgText)
 	end
 end)
+
+
+return {
+	FakePlayerjoined = FakePlayerjoined
+}
