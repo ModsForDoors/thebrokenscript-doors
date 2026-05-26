@@ -95,6 +95,11 @@ local function FakePlayerSay(text)
 	MessageSound:Play()
 end
 
+local function FakePlayerjoined()
+	AddMessage(FakePlayerName .. " joined the game", Color3.fromRGB(255, 255, 0), true)
+	JoinSound:Play()
+end
+
 local function CheckForAutoResponse(msg)
 	local lowerMsg = string.lower(msg)
 	for trigger, response in pairs(AutoResponses) do
