@@ -117,10 +117,6 @@ end
 task.spawn(function()
 	task.wait(1)
 	AddMessage(LocalPlayer.Name .. " joined the game", Color3.fromRGB(255, 255, 0), true)
-	
-	task.wait(3)
-	AddMessage(FakePlayerName .. " joined the game", Color3.fromRGB(255, 255, 0), true)
-	JoinSound:Play() 
 end)
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
