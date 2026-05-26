@@ -19,15 +19,14 @@ local RandomSoundIDs = {
 
 local LoadedMessageSounds = {}
 
-Instance.new
-for _, soundId in ipairs(RandomSoundIDs) do
-	local snd = Instance.new("Sound")
-	snd.SoundId = "rbxassetid://" .. soundId
-	snd.Volume = 0.6
-	snd.Parent = Workspace
-	
-	table.insert(LoadedMessageSounds, snd)
-end
+	for _, soundId in ipairs(RandomSoundIDs) do
+		local snd = Instance.new("Sound")
+		snd.SoundId = "rbxassetid://" .. soundId
+		snd.Volume = 0.6
+		snd.Parent = workspace
+		
+		table.insert(LoadedMessageSounds, snd)
+	end
 
 local AutoResponses = {
 	["hello"] = "err.type=hello",
