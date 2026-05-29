@@ -3,9 +3,23 @@ local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 local TextChatService = game:GetService("TextChatService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local StarterGui = game:GetService("StarterGui")
 
 local LocalPlayer = Players.LocalPlayer
 local FakePlayerName = "Null" 
+
+pcall(function()
+	StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, false)
+end)
+
+pcall(function()
+	if TextChatService:FindFirstChild("ChatWindowConfiguration") then
+		TextChatService.ChatWindowConfiguration.Enabled = false
+	end
+	if TextChatService:FindFirstChild("ChatInputBarConfiguration") then
+		TextChatService.ChatInputBarConfiguration.Enabled = false
+	end
+end)
 
 local RandomSoundIDs = {
 	"3999390679", 
@@ -135,7 +149,6 @@ end
 local function CheckForAutoResponse(msg)
 	local lowerMsg = string.lower(msg)
 	for trigger, response in pairs(AutoResponses) do
-		-- Добавлены аргументы '1, true'. Это отключает паттерны, заставляя искать ТОЧНЫЙ текст!
 		if string.find(lowerMsg, trigger, 1, true) then
 			task.spawn(function()
 				task.wait(math.random(15, 30) / 10)
@@ -169,9 +182,11 @@ task.spawn(function()
 		if player ~= LocalPlayer then
 			AddMessage(player.Name .. " is in the game", Color3.fromRGB(255, 255, 0), true)
 		end
+		
 		player.Chatted:Connect(function(msg)
-			if player ~= LocalPlayer then -- Свои мы выводим мгновенно при нажатии Enter
+			if player ~= LocalPlayer then
 				AddMessage("&lt;" .. player.Name .. "&gt; " .. msg, Color3.fromRGB(255, 255, 255), false)
+				CheckForAutoResponse(msg)
 			end
 		end)
 	end
@@ -181,6 +196,8 @@ Players.PlayerAdded:Connect(function(player)
 	AddMessage(player.Name .. " joined the game", Color3.fromRGB(255, 255, 0), true)
 	player.Chatted:Connect(function(msg)
 		AddMessage("&lt;" .. player.Name .. "&gt; " .. msg, Color3.fromRGB(255, 255, 255), false)
+		-- Синхронизация для тех, кто зашел позже
+		CheckForAutoResponse(msg)
 	end)
 end)
 
@@ -188,9 +205,8 @@ Players.PlayerRemoving:Connect(function(player)
 	AddMessage(player.Name .. " left the game", Color3.fromRGB(255, 255, 0), true)
 end)
 
--- === УПРАВЛЕНИЕ ПОЛЕМ ВВОДА ===
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-	if not gameProcessed and input.KeyCode == Enum.KeyCode.Slash then
+	if input.KeyCode == Enum.KeyCode.Slash then
 		task.wait()
 		TextBox:CaptureFocus()
 	end
@@ -208,13 +224,10 @@ TextBox.FocusLost:Connect(function(enterPressed)
 		end
 		
 		AddMessage("&lt;" .. LocalPlayer.Name .. "&gt; " .. msgText, Color3.fromRGB(255, 255, 255), false)
-		
 		SendToRealChat(msgText)
-		
 		CheckForAutoResponse(msgText)
 	end
 end)
-
 
 return {
 	FakePlayerjoined = FakePlayerjoined
