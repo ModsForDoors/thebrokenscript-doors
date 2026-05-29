@@ -231,5 +231,4 @@ end)
 
 return {
 	FakePlayerjoined = FakePlayerjoined
-	AddMessage = AddMessage
 }
