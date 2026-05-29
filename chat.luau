@@ -1,6 +1,8 @@
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
+local TextChatService = game:GetService("TextChatService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local LocalPlayer = Players.LocalPlayer
 local FakePlayerName = "Null" 
@@ -19,17 +21,18 @@ local RandomSoundIDs = {
 
 local LoadedMessageSounds = {}
 
-	for _, soundId in ipairs(RandomSoundIDs) do
-		local snd = Instance.new("Sound")
-		snd.SoundId = "rbxassetid://" .. soundId
-		snd.Volume = 0.6
-		snd.Parent = workspace
-		
-		table.insert(LoadedMessageSounds, snd)
-	end
+for _, soundId in ipairs(RandomSoundIDs) do
+	local snd = Instance.new("Sound")
+	snd.SoundId = "rbxassetid://" .. soundId
+	snd.Volume = 0.6
+	snd.Parent = workspace
+	
+	table.insert(LoadedMessageSounds, snd)
+end
 
 local AutoResponses = {
-    ["hi?"] = "err.type=hello",
+	["hi?"] = "err.type=hello",
+	["hello"] = "err.type=hello",
 	["who are you?"] = "err.type=null",
 	["what do you want?"] = "err.type=null.freedom",
 	["herobrine"] = " ",
@@ -132,13 +135,23 @@ end
 local function CheckForAutoResponse(msg)
 	local lowerMsg = string.lower(msg)
 	for trigger, response in pairs(AutoResponses) do
-		if string.find(lowerMsg, trigger) then
+		-- Добавлены аргументы '1, true'. Это отключает паттерны, заставляя искать ТОЧНЫЙ текст!
+		if string.find(lowerMsg, trigger, 1, true) then
 			task.spawn(function()
 				task.wait(math.random(15, 30) / 10)
 				FakePlayerSay(response)
 			end)
 			return
 		end
+	end
+end
+
+local function SendToRealChat(msg)
+	if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+		local channel = TextChatService.TextChannels:FindFirstChild("RBXGeneral")
+		if channel then channel:SendAsync(msg) end
+	elseif ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents") then
+		ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(msg, "All")
 	end
 end
 
@@ -149,10 +162,33 @@ if getgenv then
 end
 
 task.spawn(function()
-	task.wait(1)
+	task.wait(0.5)
 	AddMessage(LocalPlayer.Name .. " joined the game", Color3.fromRGB(255, 255, 0), true)
+	
+	for _, player in ipairs(Players:GetPlayers()) do
+		if player ~= LocalPlayer then
+			AddMessage(player.Name .. " is in the game", Color3.fromRGB(255, 255, 0), true)
+		end
+		player.Chatted:Connect(function(msg)
+			if player ~= LocalPlayer then -- Свои мы выводим мгновенно при нажатии Enter
+				AddMessage("&lt;" .. player.Name .. "&gt; " .. msg, Color3.fromRGB(255, 255, 255), false)
+			end
+		end)
+	end
 end)
 
+Players.PlayerAdded:Connect(function(player)
+	AddMessage(player.Name .. " joined the game", Color3.fromRGB(255, 255, 0), true)
+	player.Chatted:Connect(function(msg)
+		AddMessage("&lt;" .. player.Name .. "&gt; " .. msg, Color3.fromRGB(255, 255, 255), false)
+	end)
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+	AddMessage(player.Name .. " left the game", Color3.fromRGB(255, 255, 0), true)
+end)
+
+-- === УПРАВЛЕНИЕ ПОЛЕМ ВВОДА ===
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if not gameProcessed and input.KeyCode == Enum.KeyCode.Slash then
 		task.wait()
@@ -172,6 +208,8 @@ TextBox.FocusLost:Connect(function(enterPressed)
 		end
 		
 		AddMessage("&lt;" .. LocalPlayer.Name .. "&gt; " .. msgText, Color3.fromRGB(255, 255, 255), false)
+		
+		SendToRealChat(msgText)
 		
 		CheckForAutoResponse(msgText)
 	end
