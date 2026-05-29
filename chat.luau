@@ -180,7 +180,7 @@ task.spawn(function()
 	
 	for _, player in ipairs(Players:GetPlayers()) do
 		if player ~= LocalPlayer then
-			AddMessage(player.Name .. " is in the game", Color3.fromRGB(255, 255, 0), true)
+			AddMessage(player.Name .. " joined the game", Color3.fromRGB(255, 255, 0), true)
 		end
 		
 		player.Chatted:Connect(function(msg)
@@ -196,7 +196,6 @@ Players.PlayerAdded:Connect(function(player)
 	AddMessage(player.Name .. " joined the game", Color3.fromRGB(255, 255, 0), true)
 	player.Chatted:Connect(function(msg)
 		AddMessage("&lt;" .. player.Name .. "&gt; " .. msg, Color3.fromRGB(255, 255, 255), false)
-		-- Синхронизация для тех, кто зашел позже
 		CheckForAutoResponse(msg)
 	end)
 end)
@@ -204,6 +203,7 @@ end)
 Players.PlayerRemoving:Connect(function(player)
 	AddMessage(player.Name .. " left the game", Color3.fromRGB(255, 255, 0), true)
 end)
+
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if input.KeyCode == Enum.KeyCode.Slash then
