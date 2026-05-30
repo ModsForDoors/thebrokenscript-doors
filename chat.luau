@@ -49,6 +49,7 @@ local AutoResponses = {
 	["hello"] = "err.type=hello",
 	["who are you?"] = "err.type=null",
 	["what do you want?"] = "err.type=null.freedom",
+	["where are you?"] = "In the code",
 	["herobrine"] = " ",
 	["null"] = "The end is null",
 	["circuit"] = "It was all his fault.",
